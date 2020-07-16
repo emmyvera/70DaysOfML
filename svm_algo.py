@@ -15,7 +15,76 @@ class SupportVectorMachine:
 
     #Trainind Code Finding our w and b
     def fit(self, data):
-        pass
+        # get the data passed
+        self.data = data
+        # Collect  {|w| : [w,b]}
+        optDict = {}
+
+        #This Transform will be applied to the vector of w as we step each time
+        transform = [[1,1],
+                    [-1,1],
+                    [-1,-1]
+                    [1,-1]]
+        # To store our features in other to get the maximun and minimum ranges for our graph
+        allData = []
+        
+        for yi in self.data:
+            for featureset in self.data[yi]:
+                for feature in featureset:
+                    allData.append(feature)
+
+        self.maxFeatureValue = max(allData)
+        self.minFeatureValue = min(allData)
+        allData = None
+
+
+        #Taking steps to get to get to our global minium (more like learing rate in gradient decsent)
+        step_sizes = [self.maxFeatureValue * 0.1,
+                        self.maxFeatureValue * 0.01,
+                        self.maxFeatureValue * 0.001]
+
+        bRangeMultiple = 5
+
+        # We don't need to take small steps with b as we did with w
+        bMultiply = 5
+
+        # First element of the vector w
+        latestOptimum self.maxFeatureValue*10
+
+        for step in step_sizes:
+            w = np.array([latestOptimum,latestOptimum])
+
+            optimized = False
+            while not optimized:
+                for b in np.arange(-1*(self.maxFeatureValue*bRangeMultiple), 
+                                            maxFeatureValue*bRangeMultiple,
+                                            step=bMultiply):
+                    for transformation in transform:
+                        w_t = w*transformation
+                        foundOption = True
+                        #weakest link in svm fundamentals 
+                        #yi(xi.w+b) >= 1
+                        for i in self.data:
+                            for xi in self.data[i]:
+                                yi=i
+                                if not yi*(np.dot(w_t,xi)+b >= 1):
+                                    foundOption = False
+                        
+                        if foundOption:
+                            optDict[np.linalg.norm(w_t)] = [w_t, b]
+
+                if w[0] < 0:
+                    optimized = True
+                    print("Optimized a Step")
+                else:
+                    w = w - step
+
+            norms = sorted([n for n in optDict])
+            optChoice = optDict[norms[0]]
+            self.w = optChoice[1]
+            self.b = optChoice[2]
+
+            latestOptimum = optChoice[0][0]+step*2
 
     def predict(self, features):
         # (x.w+b) where x = features passed, w = weight, b = bias
