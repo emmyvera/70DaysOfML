@@ -99,7 +99,6 @@ class SupportVectorMachine:
         classification = np.sign(np.dot(np.array(features), np.array(self.w)) + self.b)
         if classification != 0 and self.visualization:
             self.ax.scatter(features[0], features[1], s=100, marker="*", c=self.colors[classification] )
-            
         return classification
 
     def visualize(self):
